@@ -21,6 +21,7 @@ import { showRewardedAd, showInterstitial } from './lib/ad';
 import AudioManager from './lib/audio';
 import FloatTextSystem from './lib/floattext';
 import { loadBackgroundImage } from './lib/render';
+import { initOpenData, submitLadderScore, showLeaderboard, hideLeaderboard } from './social/open-data';
 
 const ctx = canvas.getContext('2d');
 
@@ -39,6 +40,7 @@ export default class Main {
     this.lastTime = Date.now();
 
     GameGlobal.databus.bgImage = loadBackgroundImage();
+    initOpenData();
 
     wx.onTouchStart(this.onTouchStart.bind(this));
     wx.onTouchMove(this.onTouchMove.bind(this));
@@ -77,6 +79,10 @@ export default class Main {
         return;
       }
       const action = this.ui.checkMenuTouch(clientX, clientY);
+      if (action === 'leaderboard') {
+        showLeaderboard('friend');
+        return;
+      }
       if (action === 'levels' || action === 'infinite' || action === 'ladder') {
         this.audio.playButtonClick();
         db.initGame(action);
@@ -136,6 +142,10 @@ export default class Main {
       }
       if (this.ui.isTouchOnChallengeFriend(clientX, clientY)) {
         this.challengeFriend();
+        return;
+      }
+      if (this.ui.isTouchOnLeaderboard(clientX, clientY)) {
+        showLeaderboard('friend');
         return;
       }
       return;

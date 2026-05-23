@@ -7,6 +7,7 @@ export default class UI {
     this.btnLevels = { x: 0, y: 0, w: 0, h: 0 };
     this.btnInfinite = { x: 0, y: 0, w: 0, h: 0 };
     this.btnLadder = { x: 0, y: 0, w: 0, h: 0 };
+    this.btnLeaderboard = { x: 0, y: 0, w: 0, h: 0 };
     this.btnUpgrades = { x: 0, y: 0, w: 0, h: 0 };
     this.btnRestart = { x: 0, y: 0, w: 0, h: 0 };
     this.btnMenu = { x: 0, y: 0, w: 0, h: 0 };
@@ -101,6 +102,21 @@ export default class UI {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('?', helpX + helpR, helpY + helpR);
+
+    // Leaderboard button (left side)
+    const lbR = 18;
+    const lbX = 10;
+    const lbY = 10;
+    ctx.fillStyle = 'rgba(255,255,255,0.25)';
+    ctx.beginPath();
+    ctx.arc(lbX + lbR, lbY + lbR, lbR, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 14px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('??', lbX + lbR, lbY + lbR);
+    this.btnLeaderboard = { x: lbX, y: lbY, w: lbR * 2, h: lbR * 2 };
     this.btnTutorial = { x: helpX, y: helpY, w: helpR * 2, h: helpR * 2 };
 
     const db = GameGlobal.databus;
@@ -118,6 +134,7 @@ export default class UI {
     if (this.hitTest(this.btnInfinite, clientX, clientY)) return 'infinite';
     if (this.hitTest(this.btnLadder, clientX, clientY)) return 'ladder';
     if (this.hitTest(this.btnUpgrades, clientX, clientY)) return 'upgrades';
+    if (this.hitTest(this.btnLeaderboard, clientX, clientY)) return 'leaderboard';
     return null;
   }
 
@@ -483,6 +500,11 @@ export default class UI {
 
   isTouchOnDoubleCoins(clientX, clientY) {
     return GameGlobal.databus.isGameOver && this.hitTest(this.btnDoubleCoins, clientX, clientY);
+  }
+
+  isTouchOnLeaderboard(clientX, clientY) {
+    return (GameGlobal.databus.isGameOver && GameGlobal.databus.gameMode === 'ladder')
+      && this.hitTest(this.btnLeaderboard, clientX, clientY);
   }
 
   isTouchOnRestart(clientX, clientY) {
