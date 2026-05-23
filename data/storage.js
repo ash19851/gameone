@@ -81,6 +81,45 @@ export function getUpgradeLevel(key) {
   return (data.upgrades && data.upgrades[key]) || 0;
 }
 
+// Skin management
+export function getOwnedSkins() {
+  const data = load();
+  return data.ownedSkins || ['default'];
+}
+
+export function getEquippedCarSkin() {
+  const data = load();
+  return data.equippedCarSkin || 'default';
+}
+
+export function getEquippedBlockTheme() {
+  const data = load();
+  return data.equippedBlockTheme || 'default';
+}
+
+export function buySkin(skinId, cost, type) {
+  const data = load();
+  if ((data.coins || 0) < cost) return false;
+  if (!data.ownedSkins) data.ownedSkins = ['default'];
+  if (data.ownedSkins.includes(skinId)) return false; // already owned
+  data.coins -= cost;
+  data.ownedSkins.push(skinId);
+  save(data);
+  return true;
+}
+
+export function equipCarSkin(skinId) {
+  const data = load();
+  data.equippedCarSkin = skinId;
+  save(data);
+}
+
+export function equipBlockTheme(themeId) {
+  const data = load();
+  data.equippedBlockTheme = themeId;
+  save(data);
+}
+
 export function buyUpgrade(key, cost, newLevel) {
   const data = load();
   if ((data.coins || 0) < cost) return false;

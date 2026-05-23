@@ -22,6 +22,7 @@ import AudioManager from './lib/audio';
 import FloatTextSystem from './lib/floattext';
 import { loadBackgroundImage } from './lib/render';
 import { initOpenData, submitLadderScore, showLeaderboard, hideLeaderboard } from './social/open-data';
+import { CAR_SKINS, BLOCK_THEMES } from './lib/skins';
 
 const ctx = canvas.getContext('2d');
 
@@ -90,9 +91,22 @@ export default class Main {
         if (!getTutorialSeen()) {
           this.showTutorial();
         }
+      } else if (action === 'skins') {
+        this.audio.playButtonClick();
+        db.screen = 'skins';
       } else if (action === 'upgrades') {
         this.audio.playButtonClick();
         db.screen = 'upgrades';
+      }
+      return;
+    }
+
+    if (db.screen === 'skins') {
+      if (this.ui.isTouchOnMenu(clientX, clientY)) {
+        this.audio.playButtonClick();
+        db.backToMenu();
+      } else {
+        this.ui.handleSkinShopTouch(clientX, clientY);
       }
       return;
     }
@@ -555,6 +569,12 @@ export default class Main {
     if (db.screen === 'menu') {
       this.drawBackground();
       this.ui.renderMenu(ctx);
+      return;
+    }
+
+    if (db.screen === 'skins') {
+      this.drawBackground();
+      this.ui.renderSkinShop(ctx);
       return;
     }
 
