@@ -53,7 +53,9 @@ export function incrementGameCount() {
 
 export function saveBestScore(gameMode, score) {
   const data = load();
-  const key = gameMode === 'infinite' ? 'infiniteBest' : 'levelsBest';
+  let key = 'levelsBest';
+  if (gameMode === 'infinite') key = 'infiniteBest';
+  else if (gameMode === 'ladder') key = 'ladderBest';
   if (score > (data[key] || 0)) {
     data[key] = score;
     save(data);
@@ -69,6 +71,12 @@ export function saveCoins(amount) {
 }
 
 export function getUpgradeLevel(key) {
+  // Ladder mode: all upgrades disabled for fair competition
+  try {
+    if (GameGlobal && GameGlobal.databus && GameGlobal.databus.gameMode === 'ladder') {
+      return 0;
+    }
+  } catch (e) {}
   const data = load();
   return (data.upgrades && data.upgrades[key]) || 0;
 }

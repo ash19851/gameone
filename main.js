@@ -77,7 +77,7 @@ export default class Main {
         return;
       }
       const action = this.ui.checkMenuTouch(clientX, clientY);
-      if (action === 'levels' || action === 'infinite') {
+      if (action === 'levels' || action === 'infinite' || action === 'ladder') {
         this.audio.playButtonClick();
         db.initGame(action);
         this.start();
@@ -125,8 +125,17 @@ export default class Main {
         db.backToMenu();
         return;
       }
-      if (this.ui.isTouchOnDoubleCoins(clientX, clientY)) {
+      if (this.ui.isTouchOnDoubleCoins(clientX, clientY) && db.gameMode !== 'ladder') {
         this.doDoubleCoins();
+        return;
+      }
+      // Ladder-specific buttons
+      if (this.ui.isTouchOnShareLadder(clientX, clientY)) {
+        this.shareLadderScore();
+        return;
+      }
+      if (this.ui.isTouchOnChallengeFriend(clientX, clientY)) {
+        this.challengeFriend();
         return;
       }
       return;
@@ -492,7 +501,7 @@ export default class Main {
       this.audio.playCollapse();
       db.shakeAmount = SHAKE_INITIAL;
       db.shakeDuration = 0.5;
-      if (!db.reviveUsed) {
+      if (!db.reviveUsed && db.gameMode !== 'ladder') {
         db.screen = 'revive';
         db.isGameOver = true;
         this.physics.triggerCollapse(db.settledBlocks, this.particles, db.tiltAngle);
@@ -634,6 +643,21 @@ export default class Main {
     grad.addColorStop(1, 'rgba(15, 52, 96, 0.85)');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  shareLadderScore() {
+    const db = GameGlobal.databus;
+    wx.shareAppMessage({
+      title: `? ? ? ? ? ? ? ? ${db.score} ??? ? ? ? ??`,
+    });
+  }
+
+  challengeFriend() {
+    const db = GameGlobal.databus;
+    wx.shareAppMessage({
+      title: `?? ${db.score} ?????????`,
+      query: `challenge=1&score=${db.score}&mode=ladder`,
+    });
   }
 
   loop() {

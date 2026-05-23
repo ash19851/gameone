@@ -41,6 +41,7 @@ export default class DataBus {
     const best = loadBestScores();
     this.levelsBest = best.levelsBest;
     this.infiniteBest = best.infiniteBest;
+    this.ladderBest = best.ladderBest || 0;
     this.coins = best.coins;
     this.upgrades = best.upgrades;
     this.gameCount = (best.gameCount || 0) + 1;
@@ -58,6 +59,7 @@ export default class DataBus {
     const best = loadBestScores();
     this.levelsBest = best.levelsBest;
     this.infiniteBest = best.infiniteBest;
+    this.ladderBest = best.ladderBest || 0;
     this.coins = best.coins;
     this.upgrades = best.upgrades;
     this.screen = 'menu';
